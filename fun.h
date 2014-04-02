@@ -17,4 +17,19 @@ template <class In, class Out> class Fun
     FunImpl<In, Out>* const impl;
 };
 
+template <class In1, class In2, class Out> class Fun2
+{
+  public:
+    typedef Out(*Fun2Ptr)(In1, In2);
+    Fun2(Fun2Impl<In1, In2, Out>* const f): impl(f) {}
+    Fun2(Fun2Ptr f): impl(new Global2<In1, In2, Out>(f)) {}
+    Fun2(const Fun2<In1, In2, Out>& fun): impl(fun.impl->copy()) {}
+    ~Fun2() {delete impl;}
+    Out operator()(In1 arg1, In2 arg2) const
+    { return (*impl)(arg1, arg2); }
+    inline Fun<In2, Out> operator()(In1 arg1) const;
+  private:
+    Fun2Impl<In1, In2, Out>* const impl;
+};
+
 #endif
